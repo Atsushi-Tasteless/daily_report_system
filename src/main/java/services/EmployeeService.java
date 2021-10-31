@@ -1,16 +1,16 @@
-package service;
+package services;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import action.views.EmployeeConverter;
-import action.views.EmployeeView;
+import actions.views.EmployeeConverter;
+import actions.views.EmployeeView;
 import constants.JpaConst;
 import models.Employee;
 import models.validators.EmployeeValidator;
-import util.EncryptUtil;
+import utils.EncryptUtil;
 
 /**
  * 従業員テーブルの操作に関わる処理を行うクラス
@@ -67,6 +67,7 @@ public class EmployeeService extends ServiceBase {
         return EmployeeConverter.toView(e);
 
     }
+
     /**
      * idを条件に取得したデータをEmployeeViewのインスタンスで返却する
      * @param id
@@ -111,7 +112,6 @@ public class EmployeeService extends ServiceBase {
         //登録内容のバリデーションを行う
         List<String> errors = EmployeeValidator.validate(this, ev, true, true);
 
-
         //バリデーションエラーがなければデータを登録する
         if (errors.size() == 0) {
             create(ev);
@@ -129,11 +129,11 @@ public class EmployeeService extends ServiceBase {
      */
     public List<String> update(EmployeeView ev, String pepper) {
 
-        //idを条件に登録済みの従業員を取得する
+        //idを条件に登録済みの従業員情報を取得する
         EmployeeView savedEmp = findOne(ev.getId());
 
         boolean validateCode = false;
-        if(!savedEmp.getCode().equals(ev.getCode())) {
+        if (!savedEmp.getCode().equals(ev.getCode())) {
             //社員番号を更新する場合
 
             //社員番号についてのバリデーションを行う
@@ -143,7 +143,7 @@ public class EmployeeService extends ServiceBase {
         }
 
         boolean validatePass = false;
-        if(ev.getPassword() != null && !ev.getPassword().equals("")) {
+        if (ev.getPassword() != null && !ev.getPassword().equals("")) {
             //パスワードに入力がある場合
 
             //パスワードについてのバリデーションを行う
@@ -161,10 +161,10 @@ public class EmployeeService extends ServiceBase {
         LocalDateTime today = LocalDateTime.now();
         savedEmp.setUpdatedAt(today);
 
-        //変更内容についてバリデーションを行う
-        List<String> errors = EmployeeValidator.validate(this,  savedEmp, validateCode, validatePass);
+        //更新内容についてバリデーションを行う
+        List<String> errors = EmployeeValidator.validate(this, savedEmp, validateCode, validatePass);
 
-      //バリデーションエラーがなければデータを更新する
+        //バリデーションエラーがなければデータを更新する
         if (errors.size() == 0) {
             update(savedEmp);
         }
@@ -186,11 +186,12 @@ public class EmployeeService extends ServiceBase {
         LocalDateTime today = LocalDateTime.now();
         savedEmp.setUpdatedAt(today);
 
-        //論理削除フラグを立てる
+        //論理削除フラグをたてる
         savedEmp.setDeleteFlag(JpaConst.EMP_DEL_TRUE);
 
         //更新処理を行う
         update(savedEmp);
+
     }
 
     /**
@@ -231,7 +232,7 @@ public class EmployeeService extends ServiceBase {
     /**
      * 従業員データを1件登録する
      * @param ev 従業員データ
-     * @return 登録結果（成功：true　失敗：false）
+     * @return 登録結果(成功:true 失敗:false)
      */
     private void create(EmployeeView ev) {
 
@@ -245,14 +246,13 @@ public class EmployeeService extends ServiceBase {
      * 従業員データを更新する
      * @param ev 画面から入力された従業員の登録内容
      */
-    private void  update(EmployeeView ev) {
+    private void update(EmployeeView ev) {
 
         em.getTransaction().begin();
         Employee e = findOneInternal(ev.getId());
         EmployeeConverter.copyViewToModel(e, ev);
         em.getTransaction().commit();
+
     }
+
 }
-
-
-

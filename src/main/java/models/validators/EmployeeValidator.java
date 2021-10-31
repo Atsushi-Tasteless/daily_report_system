@@ -3,9 +3,9 @@ package models.validators;
 import java.util.ArrayList;
 import java.util.List;
 
-import action.views.EmployeeView;
+import actions.views.EmployeeView;
 import constants.MessageConst;
-import service.EmployeeService;
+import services.EmployeeService;
 
 
 /**

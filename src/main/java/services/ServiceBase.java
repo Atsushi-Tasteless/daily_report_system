@@ -1,8 +1,8 @@
-package service;
+package services;
 
 import javax.persistence.EntityManager;
 
-import util.DBUtil;
+import utils.DBUtil;
 
 /**
  * DB接続に関わる共通処理を行うクラス
@@ -10,14 +10,16 @@ import util.DBUtil;
 public class ServiceBase {
 
     /**
-     * EntityManagerのクローズ
+     * EntityManagerインスタンス
      */
     protected EntityManager em = DBUtil.createEntityManager();
 
+    /**
+     * EntityManagerのクローズ
+     */
     public void close() {
-        if(em.isOpen()) {
+        if (em.isOpen()) {
             em.close();
         }
     }
-
 }
