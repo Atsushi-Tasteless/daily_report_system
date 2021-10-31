@@ -3,6 +3,7 @@ package services;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import actions.views.EmployeeConverter;
 import actions.views.EmployeeView;
 import actions.views.ReportConverter;
 import actions.views.ReportView;
@@ -11,17 +12,16 @@ import models.Report;
 import models.validators.ReportValidator;
 
 /**
- * に峰テーブルの操作にかかわる処理を行うクラス
- *
+ * 日報テーブルの操作に関わる処理を行うクラス
  */
 public class ReportService extends ServiceBase {
 
     /**
-    * 指定した従業員が作成した日報データを、指定されたページ数の一覧画面に表示する分取得しReportViewのリストで返却する
-    * @param employee 従業員
-    * @param page ページ数
-    * @return 一覧画面に表示するデータのリスト
-    */
+     * 指定した従業員が作成した日報データを、指定されたページ数の一覧画面に表示する分取得しReportViewのリストで返却する
+     * @param employee 従業員
+     * @param page ページ数
+     * @return 一覧画面に表示するデータのリスト
+     */
     public List<ReportView> getMinePerPage(EmployeeView employee, int page) {
 
         List<Report> reports = em.createNamedQuery(JpaConst.Q_REP_GET_ALL_MINE, Report.class)
@@ -30,6 +30,20 @@ public class ReportService extends ServiceBase {
                 .setMaxResults(JpaConst.ROW_PER_PAGE)
                 .getResultList();
         return ReportConverter.toViewList(reports);
+    }
+
+    /**
+     * 指定した従業員が作成した日報データの件数を取得し、返却する
+     * @param employee
+     * @return 日報データの件数
+     */
+    public long countAllMine(EmployeeView employee) {
+
+        long count = (long) em.createNamedQuery(JpaConst.Q_REP_COUNT_ALL_MINE, Long.class)
+                .setParameter(JpaConst.JPQL_PARM_EMPLOYEE, EmployeeConverter.toModel(employee))
+                .getSingleResult();
+
+        return count;
     }
 
     /**
@@ -139,6 +153,5 @@ public class ReportService extends ServiceBase {
         em.getTransaction().commit();
 
     }
-
 
 }
