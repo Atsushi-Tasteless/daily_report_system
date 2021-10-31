@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
-import com.sun.xml.fastinfoset.stax.events.EventBase;
-
 import actions.views.EmployeeView;
 import constants.AttributeConst;
 import constants.ForwardConst;
