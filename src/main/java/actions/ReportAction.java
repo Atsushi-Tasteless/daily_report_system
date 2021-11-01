@@ -76,6 +76,9 @@ public class ReportAction extends ActionBase {
         ReportView rv = new ReportView();
         rv.setReportDate(LocalDate.now());
         putRequestScope(AttributeConst.REPORT, rv);////日付のみ設定済みの日報インスタンス
+
+      //新規登録画面を表示
+        forward(ForwardConst.FW_REP_NEW);
     }
 
 }
