@@ -16,7 +16,7 @@ public class ReportConverter {
      * @param rv ReportViewのインスタンス
      * @return Reportのインスタンス
      */
-    public static Report toMoedel(ReportView rv) {
+    public static Report toModel(ReportView rv) {
         return new Report(
                 rv.getId(),
                 EmployeeConverter.toModel(rv.getEmployee()),
@@ -34,7 +34,7 @@ public class ReportConverter {
      */
     public static ReportView toView(Report r) {
 
-        if(r == null) {
+        if (r == null) {
             return null;
         }
 
@@ -56,7 +56,7 @@ public class ReportConverter {
     public static List<ReportView> toViewList(List<Report> list) {
         List<ReportView> evs = new ArrayList<>();
 
-        for(Report r : list) {
+        for (Report r : list) {
             evs.add(toView(r));
         }
 
@@ -76,6 +76,7 @@ public class ReportConverter {
         r.setContent(rv.getContent());
         r.setCreatedAt(rv.getCreatedAt());
         r.setUpdatedAt(rv.getUpdatedAt());
+
     }
 
     /**
