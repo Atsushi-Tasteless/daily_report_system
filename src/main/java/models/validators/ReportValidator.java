@@ -1,7 +1,10 @@
 package models.validators;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import actions.views.ReportView;
 import constants.MessageConst;
@@ -29,6 +32,27 @@ public class ReportValidator {
         String contentError = validateContent(rv.getContent());
         if (!contentError.equals("")) {
             errors.add(contentError);
+        }
+
+        //出勤時間の入力チェック
+        String startTimeError = validateStartTime(rv.getStart_time());
+        if(!startTimeError.equals("")) {
+            errors.add(startTimeError);
+        }
+
+        //退勤時間のチェック
+        String endTimeError = validateEndTime(rv.getEnd_time());
+        if(!endTimeError.equals("")) {
+            errors.add(endTimeError);
+        }
+
+        //出退勤時間が入力されていた時
+        if(startTimeError.equals("") && endTimeError.equals("")){
+            //出退勤時間の前後関係のチェック
+            String startEndTimeOrderError = validateStartEndTimeOrder(rv.getStart_time(), rv.getEnd_time());
+            if(!startEndTimeOrderError.equals("")) {
+                errors.add(startEndTimeOrderError);
+            }
         }
 
         return errors;
@@ -61,4 +85,62 @@ public class ReportValidator {
         //入力値がある場合は空文字を返却
         return "";
     }
+
+    /**
+     * 内容に入力値があるかチェック、入力値がなければエラーを返却
+     * @param start_time 出勤時間
+     * @return エラーメッセージ
+     */
+    private static String validateStartTime(String start_time) {
+        Pattern p = Pattern.compile("^([0-1][0-9] | [2][0-3]):[0-5][0-9]$");
+        Matcher m = p.matcher(start_time);
+        if(!m.find()) {
+            return "出勤時間を正しく入力してください";
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * 内容に入力値があるかをチェックし、入力値がなければエラーメッセージを返却
+     * @param start_time 退勤時間
+     * @return エラーメッセージ
+     */
+    private static String validateEndTime(String end_time) {
+        Pattern p = Pattern.compile("^([0-1][0-9]|[2][0-3]):[0-5][0-9]$");
+        Matcher m = p.matcher(end_time);
+        if(!m.find()) {
+            return "退勤時間を正しく入力してください";
+        } else {
+            return"";
+        }
+    }
+
+    /**
+     * 内容に入力値があるかをチェックし、入力値がなければエラーメッセージを返却
+     * @param start_time 出勤時間, end_time 退勤時間
+     * @return エラーメッセージ
+     */
+    private static String validateStartEndTimeOrder(String start_time, String end_time) {
+        System.out.println("順序");
+        Time start = Time.valueOf(start_time + ":00");
+        Time end = Time.valueOf(end_time +":00");
+        if(start.after(end)) {
+            System.out.println("順序が違います");
+            return "出勤時間と退勤時間の入力が逆になっていないか確認してください";
+        } else {
+            System.out.println("正しい順序です");
+            return "";
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
